@@ -1,0 +1,21 @@
+.section-info {
+    color: darkgrey;
+}
+
+td,
+th {
+    vertical-align: top;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+.mw-reference-text div, /* https://phabricator.wikimedia.org/T213256 */
+#preview tr[id],
+#preview td[id],
+#preview th[id],
+#preview table[id],
+#preview .cx-segment {
+    outline: 3px solid red;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>Translation debugger</title>
+		<meta name="description" content="Translation debugger for Content Translation" />
+		<!-- Compiled and minified CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+		<!-- Compiled and minified JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+		<script src="debugger.js"></script>
+		<link rel="stylesheet" href="style.css">
+	</head>
+
+	<body>
+		<nav>
+			<div class="nav-wrapper">
+				<a href="#" class="brand-logo">Translation debugger</a>
+				<ul id="nav-mobile" class="right hide-on-med-and-down">
+					<li><a href="https://en.wikipedia.org/wiki/Special:CX">Content translation</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="container">
+			<div class='row'>
+				<div class="input-field col s3">
+					<label for="translation-from">Source language</label>
+					<input id="translation-from" type='text'></input>
+				</div>
+				<div class="input-field col s3">
+					<label for="translation-to">Target language</label>
+					<input id="translation-to" type='text'></input>
+				</div>
+				<div class="input-field col s3">
+					<label for="translation-source">Source title</label>
+					<input id="translation-source" type='text'></input> </div>
+				<div class="input-field col s3">
+					<a id="find" class="waves-effect waves-light btn">Find</a>
+				</div>
+			</div>
+			<div class='row'>
+				<div class="input-field col s3">
+					<label for="translation-id">Translation Id:</label>
+					<input id="translation-id" type='text'></input>
+				</div>
+				<div class="input-field col s3">
+					<a id="fetch" class="waves-effect waves-light btn">Fetch translation</a>
+				</div>
+			</div>
+			<div class='row'>
+				<div class="col s12">
+					<ul class="tabs">
+						<li class="tab col s3"><a class="active" href="#info">Information</a></li>
+						<li class="tab col s3"><a href="#cxtable">Translation</a></li>
+						<li class="tab col s3"><a href="#preview">Article preview</a></li>
+						<li class="tab col s3"><a href="#wikitext">Wikitext</a></li>
+					</ul>
+				</div>
+				<div id='info' class='col s12'></div>
+				<table id='cxtable' class="col s12"></table>
+				<div id='preview' class="col s12"></div>
+				<pre id='wikitext' class="col s12"></pre>
+			</div>
+
+	</body>
