@@ -86,42 +86,52 @@ function onFind(response) {
 
 function onFetch(response) {
     let key,
-        sections = response.query.contenttranslationcorpora.sections;
-    translatedContentHTML = '';
-    translatedContentWikitext = '';
+        sections,
+        translatedContentHTML = '';
+
+    sections = response.query.contenttranslationcorpora.sections;
     $('#cxtable').empty().append(
         $('<thead>').append($('<tr>').append(
+            $('<td width="33%">').append('Source article'),
+            $('<td width="33%">').append('Machine Translation'),
+            $('<td width="33%">').append('User Translation'))));
 
-            $('<td>').append('Source article'),
-            $('<td>').append('Translation'),
-            $('<td>').append('Section information'))));
     for (key in sections) {
         let $sectionRow,
+            $mtSectionRow,
             $sourceRow,
-            $sectionInfo = [
-                $('<div>').html('Section id: ' + key),
-                $('<div>').html(' User translation')
-            ]
+            $userSectionInfo,
+            $mtSectionInfo;
 
-            if ( sections[key].mt ) {
-                $sectionInfo.push( $('<div>').html('Engine: ' +  sections[key].mt.engine));
-                $sectionInfo.push( $('<div>').html('Timestamp: ' +  sections[key].mt.timestamp))
-            }
-        if (sections[key].user) {
-            translatedContentHTML += sections[key].user.content;
-            $sectionRow = $(sections[key].user.content);
-        } else if (sections[key].mt) {
-            translatedContentHTML += sections[key].mt.content;
-            $sectionRow = $(sections[key].mt.content);
-        }
         if (sections[key].source) {
             $sourceRow = $(sections[key].source.content);
         }
+
+        if (sections[key].user) {
+            translatedContentHTML += sections[key].user.content;
+            $sectionRow = $(sections[key].user.content);
+            $userSectionInfo = $('<details>').append(
+                $('<summary>').html('Section id: ' + key),
+            )
+            $userSectionInfo.append( $('<div>').html('Timestamp: ' +  sections[key].user.timestamp))
+        }
+
+        if (sections[key].mt) {
+            translatedContentHTML += sections[key].mt.content;
+            $mtSectionRow = $(sections[key].mt.content);
+            $mtSectionInfo = $('<details>').append(
+                $('<summary>').html('Section id: ' + key),
+            )
+            $mtSectionInfo.append( $('<div>').html('Engine: ' +  sections[key].mt.engine));
+            $mtSectionInfo.append( $('<div>').html('Timestamp: ' +  sections[key].mt.timestamp))
+        }
+
         $('#cxtable').append(
             $('<tr>').append(
                 $('<td>').append($sourceRow),
-                $('<td>').append($sectionRow),
-                $('<td>').addClass('section-info').append($sectionInfo)));
+                $('<td>').append($mtSectionRow, $mtSectionInfo),
+                $('<td>').append($sectionRow, $userSectionInfo)
+        ));
     }
 }
 

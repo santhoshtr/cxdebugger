@@ -19,3 +19,8 @@ pre {
 #preview .cx-segment {
     outline: 3px solid red;
 }
+
+details {
+    background-color: whitesmoke;
+    padding: 4px;
+}
