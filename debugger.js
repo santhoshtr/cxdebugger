@@ -50,14 +50,14 @@ function wikitext() {
 function fetch(translationId) {
     let url;
     url =
-        'https://test.wikipedia.org/w/api.php?action=query&list=contenttranslationcorpora&format=json&origin=*&translationid=';
+        'https://en.wikipedia.org/w/api.php?action=query&list=contenttranslationcorpora&format=json&origin=*&translationid=';
     url = url + translationId;
     return $.get(url);
 };
 
 function findTranslation(sourcetitle, source, target) {
     let url =
-        'https://test.wikipedia.org/w/api.php?action=query&list=contenttranslation&format=json&sourcetitle=SOURCE&from=FROM&to=TO&origin=*';
+        'https://en.wikipedia.org/w/api.php?action=query&list=contenttranslation&format=json&sourcetitle=SOURCE&from=FROM&to=TO&origin=*';
 
     url = url.replace('SOURCE', sourcetitle)
         .replace('FROM', source)
