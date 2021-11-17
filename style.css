@@ -1,14 +1,14 @@
 .section-info {
-    color: darkgrey;
+  color: darkgrey;
 }
 
 td,
 th {
-    vertical-align: top;
+  vertical-align: top;
 }
 
 pre {
-    white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 
 .mw-reference-text div, /* https://phabricator.wikimedia.org/T213256 */
@@ -17,10 +17,14 @@ pre {
 #preview th[id],
 #preview table[id],
 #preview .cx-segment {
-    outline: 3px solid red;
+  outline: 3px solid red;
 }
 
 details {
-    background-color: whitesmoke;
-    padding: 4px;
+  background-color: whitesmoke;
+  padding: 4px;
+}
+
+.progress {
+  display: none;
 }

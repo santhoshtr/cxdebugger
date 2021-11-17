@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Template debugger</title>
+        <meta name="description" content="Translation debugger for Content Translation" />
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet"
+            href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+        <script src="templates.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo">Template debugger</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="translation.html">Translation debugger</a></li>
+                    <li><a href="https://recentcx.toolforge.org/">Recent translations</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Special:CX">Content translation</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class='row'>
+                <div class="input-field col s3">
+                    <input id="source_lang" value="en"></input>
+                    <label class="active" for="source_lang">Source language</label>
+                </div>
+                <div class="input-field col s3">
+                    <label class="active" for="target_lang">Target language</label>
+                    <input id="target_lang" value="es"></input>
+                </div>
+                <div class="input-field col s3">
+                    <label class="active" for="source_title">Source title</label>
+                    <input id="source_title" value="Thirty Meter Telescope"></input>
+                </div>
+                <div class="input-field col s3">
+                    <label class="active" for="target_title">Target title</label>
+                    <input id="target_title" value="Telescopio de Treinta Metros"></input>
+                </div>
+            </div>
+
+            <div class='row'>
+                <div class="input-field col s12">
+                    <label class="active" for="wikitext">Wikitext</label>
+                    <textarea class="materialize-textarea" id="wikitext">{{Infobox Telescope}}</textarea>
+                </div>
+
+            </div>
+            <div class='row'>
+                <div class="col s3">
+                    <button class="waves-effect waves-light btn" id="translate"
+                        onclick="translate();">Translate</button>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="progress" id="progress">
+                    <div class="indeterminate"></div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col s4 ">
+                    <h4>Source html</h4>
+                    <div class="card" id="sourcehtml"></div>
+                </div>
+                <div class="col s4 ">
+                    <h4>Translated wikitext</h4>
+                    <pre class="card" id="targetwikitext"></pre>
+                </div>
+                <div class="col s4 ">
+                    <h4>Translated html</h4>
+                    <div class="card" id="targethtml"></div>
+                </div>
+            </div>
+
+    </body>
