@@ -1,41 +1,50 @@
 let translation,
     translatedContentHTML = '',
-    translatedContentWikitext = '';
+    translatedContentWikitext = '',
+    previewInProgress = false,
+    wikitextInProgress = false;
 
 function preview() {
-    document.getElementById("progress").style.display="none";
+    if (previewInProgress) { return }
+    previewInProgress = true;
+    document.getElementById("progress").style.display = "block";
 
     const targetLanguage = $('#translation-to').val()
 
     const url = `https://${targetLanguage}.wikipedia.org/api/rest_v1/transform/wikitext/to/html`;
 
     return wikitext().then(() => {
+        document.getElementById("progress").style.display = "block";
         axios.post(
             url,
             { wikitext: translatedContentWikitext, body_only: true }
         ).then((targethtml) => {
             $('#preview').html(targethtml.data)
+            document.getElementById("progress").style.display = "none";
+            previewInProgress = false;
         });
     });
-    document.getElementById("progress").style.display="none";
+
 };
 
 function getWikitext() {
-    document.getElementById("progress").style.display="none";
+    document.getElementById("progress").style.display = "none";
 
     const url = `https://${translation.targetLanguage}.wikipedia.org/w/api.php?action=query&titles=${translation.targetTitle}&prop=revisions&rvprop=content&redirects=true&origin=*&format=json&formatversion=2&&rvstartid=${translation.targetRevisionId}`;
 
     return $.get(url).then((response) => {
         return response.query.pages[0].revisions[0].content;
     });
-    document.getElementById("progress").style.display="none";
+    document.getElementById("progress").style.display = "none";
 
 }
 
 async function wikitext() {
-    document.getElementById("progress").style.display="block";
+    if (wikitextInProgress) { return }
+    wikitextInProgress = true;
+    document.getElementById("progress").style.display = "block";
 
-    translatedContentWikitext=''
+    translatedContentWikitext = ''
     $('#wikitext').text('')
     if (translation.status === 'published' || translation.targetURL) {
         return getWikitext().then((response) => {
@@ -62,7 +71,8 @@ async function wikitext() {
         });
         $('#wikitext').text(translatedContentWikitext)
     }
-    document.getElementById("progress").style.display="none";
+    wikitextInProgress = false;
+    document.getElementById("progress").style.display = "none";
 };
 
 function fetch(translationId) {
@@ -86,7 +96,7 @@ function onFind(response) {
     }
     translatedContentHTML = '';
     translatedContentWikitext = '';
-    fetch(translation.id);
+    fetch(translation.id).then(onFetch);
     $('#translation-id').val(translation.id);
     let $table = $('<table>');
     $.each(translation, (key, value) => {
@@ -95,7 +105,7 @@ function onFind(response) {
         $table.append($row);
     });
     $('#info').empty().append($table);
-    document.getElementById("progress").style.display="none";
+    document.getElementById("progress").style.display = "none";
 }
 
 function getCleanedupContent(doc) {
@@ -207,7 +217,8 @@ function onFetch(response) {
                 $('<td>').append($sectionRow, $userSectionInfo)
             ));
     }
-    document.getElementById("progress").style.display="none";
+    document.getElementById("progress").style.display = "none";
+    preview();
 }
 
 function onTabShow(tab) {
@@ -225,13 +236,13 @@ $(document).ready(() => {
     });
 
     $('#fetch').on('click', () => {
-        document.getElementById("progress").style.display="block";
+        document.getElementById("progress").style.display = "block";
         fetch($('#translation-id').val()).then(onFetch);
         tabs.select('cxtable');
     });
 
     $('#find').on('click', () => {
-        document.getElementById("progress").style.display="block";
+        document.getElementById("progress").style.display = "block";
         tabs.select('info');
         findTranslation($('#translation-source ').val(), $('#translation-from ').val(), $('#translation-to ').val()).then(onFind)
     });
