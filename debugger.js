@@ -3,26 +3,23 @@ let translation,
     translatedContentWikitext = '';
 
 function preview() {
-    let url;
+    const targetLanguage = $('#translation-to').val()
 
-    url = 'https://TARGET.wikipedia.org/api/rest_v1/transform/wikitext/to/html';
-    url = url.replace('TARGET', $('#translation-to ').val());
-
+    const url = `https://${targetLanguage}.wikipedia.org/api/rest_v1/transform/wikitext/to/html`;
 
     return wikitext().then(() => {
-        $.post(url, {
-            wikitext: translatedContentWikitext
-        }).done((response) => {
-            $('#preview').html(response)
+        axios.post(
+            url,
+            { wikitext: translatedContentWikitext, body_only: true, stash: true }
+        ).then((targethtml) => {
+            $('#preview').html(targethtml.data)
         });
     });
 };
 
 function getWikitext() {
-    let url = 'https://TARGET.wikipedia.org/w/api.php?action=query&titles=TITLE&prop=revisions&rvprop=content&redirects=true&origin=*&format=json&formatversion=2&&rvstartid=REVISION';
-    url = url.replace('TITLE', translation.targetTitle);
-    url = url.replace('TARGET', translation.targetLanguage);
-    url = url.replace('REVISION', translation.targetRevisionId);
+    const url = `https://${translation.targetLanguage}.wikipedia.org/w/api.php?action=query&titles=${translation.targetTitle}&prop=revisions&rvprop=content&redirects=true&origin=*&format=json&formatversion=2&&rvstartid=${translation.targetRevisionId}`;
+
     return $.get(url).then((response) => {
         return response.query.pages[0].revisions[0].content;
     });
@@ -35,33 +32,27 @@ function wikitext() {
             $('#wikitext').text(translatedContentWikitext)
         });
     }
+    const targetLanguage =  $('#translation-to').val()
+    const url = `https://${targetLanguage}.wikipedia.org/api/rest_v1/transform/html/to/wikitext`;
 
-    let url = 'https://TARGET.wikipedia.org/api/rest_v1/transform/html/to/wikitext';
-    url = url.replace('TARGET', $('#translation-to ').val());
-
-    return $.post(url, {
-        html: translatedContentHTML
-    }).done((response) => {
-        translatedContentWikitext = response;
+    return axios.post(url,
+        { html: translatedContentHTML, body_only: true, stash: true }
+    ).then((translatedContent) => {
+        translatedContentWikitext = translatedContent.data;
         $('#wikitext').text(translatedContentWikitext)
     });
 };
 
 function fetch(translationId) {
-    let url;
-    url =
-        'https://en.wikipedia.org/w/api.php?action=query&list=contenttranslationcorpora&format=json&origin=*&translationid=';
-    url = url + translationId;
+    const url =
+        `https://en.wikipedia.org/w/api.php?action=query&list=contenttranslationcorpora&format=json&origin=*&translationid=${translationId}`;
     return $.get(url);
 };
 
 function findTranslation(sourcetitle, source, target) {
-    let url =
-        'https://en.wikipedia.org/w/api.php?action=query&list=contenttranslation&format=json&sourcetitle=SOURCE&from=FROM&to=TO&origin=*';
+    const url =
+        `https://en.wikipedia.org/w/api.php?action=query&list=contenttranslation&format=json&sourcetitle=${sourcetitle}&from=${source}&to=${target}&origin=*`;
 
-    url = url.replace('SOURCE', sourcetitle)
-        .replace('FROM', source)
-        .replace('TO', target);
     return $.get(url);
 };
 
@@ -85,18 +76,15 @@ function onFind(response) {
 }
 
 function onFetch(response) {
-    let key,
-        sections,
-        translatedContentHTML = '';
-
-    sections = response.query.contenttranslationcorpora.sections;
+    translatedContentHTML = '';
+    const sections = response.query.contenttranslationcorpora.sections;
     $('#cxtable').empty().append(
         $('<thead>').append($('<tr>').append(
             $('<td width="33%">').append('Source article'),
             $('<td width="33%">').append('Machine Translation'),
             $('<td width="33%">').append('User Translation'))));
 
-    for (key in sections) {
+    for (let key in sections) {
         let $sectionRow,
             $mtSectionRow,
             $sourceRow,
@@ -117,7 +105,9 @@ function onFetch(response) {
         }
 
         if (sections[key].mt) {
-            translatedContentHTML += sections[key].mt.content;
+            if(!sections[key].user){
+                translatedContentHTML += sections[key].mt.content;
+            }
             $mtSectionRow = $(sections[key].mt.content);
             $mtSectionInfo = $('<details>').append(
                 $('<summary>').html('Section id: ' + key),
