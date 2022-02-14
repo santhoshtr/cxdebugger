@@ -3,6 +3,8 @@ let translation,
     translatedContentWikitext = '';
 
 function preview() {
+    document.getElementById("progress").style.display="none";
+
     const targetLanguage = $('#translation-to').val()
 
     const url = `https://${targetLanguage}.wikipedia.org/api/rest_v1/transform/wikitext/to/html`;
@@ -15,17 +17,24 @@ function preview() {
             $('#preview').html(targethtml.data)
         });
     });
+    document.getElementById("progress").style.display="none";
 };
 
 function getWikitext() {
+    document.getElementById("progress").style.display="none";
+
     const url = `https://${translation.targetLanguage}.wikipedia.org/w/api.php?action=query&titles=${translation.targetTitle}&prop=revisions&rvprop=content&redirects=true&origin=*&format=json&formatversion=2&&rvstartid=${translation.targetRevisionId}`;
 
     return $.get(url).then((response) => {
         return response.query.pages[0].revisions[0].content;
     });
+    document.getElementById("progress").style.display="none";
+
 }
 
 async function wikitext() {
+    document.getElementById("progress").style.display="block";
+
     translatedContentWikitext=''
     $('#wikitext').text('')
     if (translation.status === 'published' || translation.targetURL) {
@@ -53,6 +62,7 @@ async function wikitext() {
         });
         $('#wikitext').text(translatedContentWikitext)
     }
+    document.getElementById("progress").style.display="none";
 };
 
 function fetch(translationId) {
@@ -85,6 +95,7 @@ function onFind(response) {
         $table.append($row);
     });
     $('#info').empty().append($table);
+    document.getElementById("progress").style.display="none";
 }
 
 function getCleanedupContent(doc) {
@@ -196,6 +207,7 @@ function onFetch(response) {
                 $('<td>').append($sectionRow, $userSectionInfo)
             ));
     }
+    document.getElementById("progress").style.display="none";
 }
 
 function onTabShow(tab) {
@@ -213,11 +225,13 @@ $(document).ready(() => {
     });
 
     $('#fetch').on('click', () => {
+        document.getElementById("progress").style.display="block";
         fetch($('#translation-id').val()).then(onFetch);
         tabs.select('cxtable');
     });
 
     $('#find').on('click', () => {
+        document.getElementById("progress").style.display="block";
         tabs.select('info');
         findTranslation($('#translation-source ').val(), $('#translation-from ').val(), $('#translation-to ').val()).then(onFind)
     });
