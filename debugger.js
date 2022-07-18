@@ -33,10 +33,9 @@ function getWikitext() {
     const url = `https://${translation.targetLanguage}.wikipedia.org/w/api.php?action=query&titles=${translation.targetTitle}&prop=revisions&rvprop=content&redirects=true&origin=*&format=json&formatversion=2&&rvstartid=${translation.targetRevisionId}`;
 
     return $.get(url).then((response) => {
+        document.getElementById("progress").style.display = "none";
         return response.query.pages[0].revisions[0].content;
     });
-    document.getElementById("progress").style.display = "none";
-
 }
 
 async function wikitext() {
@@ -246,4 +245,18 @@ $(document).ready(() => {
         tabs.select('info');
         findTranslation($('#translation-source ').val(), $('#translation-from ').val(), $('#translation-to ').val()).then(onFind)
     });
+
+    const queryParams = new URLSearchParams(document.location.search);
+    if( queryParams.has('from')) {
+        document.getElementById("translation-from").value = queryParams.get('from');
+    }
+    if( queryParams.has('to')) {
+        document.getElementById("translation-to").value = queryParams.get('to');
+    }
+    if( queryParams.has('page')) {
+        document.getElementById("translation-source").value = queryParams.get('page');
+    }
+    if( queryParams.has('from') && queryParams.has('to') & queryParams.has('page')) {
+        $('#find').click();
+    }
 });
