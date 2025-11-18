@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>CX Page load debugger</title>
+  <meta name="description" content="Translation debugger for Content Translation" />
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet"
+    href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+
+    article {
+      max-width: 60ch;
+      display: grid;
+      gap: 1em;
+    }
+    .cx-segment {
+      font-size: 16px;
+      padding: 2px 4px;
+      line-height: 1.4;
+      border-radius: 8px;
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+
+    .green {
+      background-color: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .red {
+      color: #b71c1c;
+      background-color: #ffebee;
+    }
+
+    .yellow {
+      background-color: #fffde7;
+      color: #f57f17;
+    }
+
+    .orange {
+      color: #e65100;
+      background-color: #fff3e0;
+    }
+
+    .blue {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+    }
+
+    .indigo {
+      background-color: #e8eaf6;
+      color: #1a237e;
+    }
+
+    .lime {
+      background-color: #f9fbe7;
+      color: #827717;
+    }
+  </style>
+  <script>
+    async function main() {
+      const req = await fetch(
+        `${host.value}/v2/page/${language.value}/fr/${title.value}`
+      );
+      return await req.json();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      articleform.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const result = await main();
+        article.innerHTML = result.segmentedContent;
+        const classes = [
+          "red",
+          "blue",
+          "orange",
+          "green",
+          "yellow",
+          "indigo",
+          "lime"
+        ];
+        const sentencesEls = document.querySelectorAll(".cx-segment");
+        for (let i = 0; i < sentencesEls.length; i++) {
+          const randomClass = classes[i % classes.length];
+          sentencesEls[i].classList.add(randomClass);
+        }
+        return false;
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Page loader debugger</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/">Translation debugger</a></li>
+        <li><a href="templates.html">Template debugger</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <form id="articleform">
+      <div class='row'>
+        <label for="host" class="col s8">CXServer Host: <input class="input-field " type="text" id="host"
+            value="https://cxserver.wikimedia.org" />
+        </label>
+
+      </div>
+      <div class='row'>
+        <label for="language" class="col s2">Article Language: <input class="input-field" type="text" id="language"
+            value="en" />
+        </label>
+
+        <label for="title" class="col s6">Article Title: <input class="input-field" type="text" id="title"
+            value="Albert Einstein" />
+        </label>
+
+      </div>
+      <button type="submit" class="waves-effect waves-light btn">Submit</button>
+    </form>
+    <article id="article"></article>
+  </div>
+
+</body>
