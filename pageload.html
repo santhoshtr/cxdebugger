@@ -84,6 +84,7 @@
         e.preventDefault();
         const result = await main();
         article.innerHTML = result.segmentedContent;
+        article.querySelector("base").remove();
         const classes = [
           "red",
           "blue",
