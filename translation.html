@@ -1,78 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
-		<meta charset="utf-8" />
-		<title>Translation debugger</title>
-		<meta name="description" content="Translation debugger for Content Translation" />
-		<!-- Compiled and minified CSS -->
-		<link rel="stylesheet"
-			href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Translation debugger</title>
+	<meta name="description" content="Translation debugger for Content Translation" />
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+	<link rel="stylesheet" href="lib/codex/theme-wikimedia-ui.css">
+	<link rel="stylesheet" href="lib/codex/theme-wikimedia-ui-mode-dark.css" media="(prefers-color-scheme: dark)">
+	<link rel="stylesheet" href="style.css">
+	<script type="module" src="debugger.js"></script>
+</head>
 
-		<!-- Compiled and minified JavaScript -->
-		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<body>
+	<nav aria-label="Debuggers">
+		<strong>CX Debugger</strong>
+		<ul>
+			<li><a href="translation.html" aria-current="page">Translation debugger</a></li>
+			<li><a href="templates.html">Template debugger</a></li>
+			<li><a href="pageload.html">Page loader debugger</a></li>
+		</ul>
+		<a href="https://github.com/santhoshtr/cxdebugger">Source code</a>
+	</nav>
 
-		<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
-		<script src="debugger.js"></script>
-		<link rel="stylesheet" href="style.css">
-	</head>
+	<main>
+		<h1>Translation debugger</h1>
 
-	<body>
-		<nav>
-			<div class="nav-wrapper">
-				<a href="#" class="brand-logo">Translation debugger</a>
-				<ul id="nav-mobile" class="right hide-on-med-and-down">
-					<li><a href="templates.html">Template debugger</a></li>
-					<li><a href="pageload.html">Page loader debugger</a></li>
-				</ul>
-			</div>
-		</nav>
+		<form id="find-form">
+			<label class="wide">Wiki API <input id="wiki-api" type="url" required size="32" value="https://en.wikipedia.org"></label>
+			<label>Source language <input id="translation-from" type="text"></label>
+			<label>Target language <input id="translation-to" type="text"></label>
+			<label>Source title <input id="translation-source" type="text"></label>
+			<button type="submit">Find</button>
+		</form>
 
-		<div class="container">
-			<div class='row'>
-				<div class="input-field col s3">
-					<label for="translation-from">Source language</label>
-					<input id="translation-from" type='text'></input>
-				</div>
-				<div class="input-field col s3">
-					<label for="translation-to">Target language</label>
-					<input id="translation-to" type='text'></input>
-				</div>
-				<div class="input-field col s3">
-					<label for="translation-source">Source title</label>
-					<input id="translation-source" type='text'></input> </div>
-				<div class="input-field col s3">
-					<a id="find" class="waves-effect waves-light btn">Find</a>
-				</div>
-			</div>
-			<div class='row'>
-				<div class="input-field col s3">
-					<label for="translation-id">Translation Id:</label>
-					<input id="translation-id" type='text'></input>
-				</div>
-				<div class="input-field col s3">
-					<a id="fetch" class="waves-effect waves-light btn">Fetch translation</a>
-				</div>
-			</div>
-			<div class='row'>
-                <div class="progress" id="progress">
-                    <div class="indeterminate"></div>
-                </div>
-            </div>
-			<div class='row'>
-				<div class="col s12">
-					<ul class="tabs">
-						<li class="tab col s3"><a class="active" href="#info">Information</a></li>
-						<li class="tab col s3"><a href="#cxtable">Translation</a></li>
-						<li class="tab col s3"><a href="#preview">Article preview</a></li>
-						<li class="tab col s3"><a href="#wikitext">Wikitext</a></li>
-					</ul>
-				</div>
-				<div id='info' class='col s12'></div>
-				<table id='cxtable' class="col s12"></table>
-				<div id='preview' class="col s12"></div>
-				<pre id='wikitext' class="col s12"></pre>
-			</div>
+		<form id="fetch-form">
+			<label>Translation Id <input id="translation-id" type="text"></label>
+			<button type="submit">Fetch translation</button>
+		</form>
 
-	</body>
+		<progress id="progress" aria-label="Loading" hidden></progress>
+
+		<div role="tablist" aria-label="Translation details">
+			<button type="button" role="tab" id="tab-info" aria-controls="info" aria-selected="true">Information</button>
+			<button type="button" role="tab" id="tab-translation" aria-controls="translation" aria-selected="false" tabindex="-1">Translation</button>
+			<button type="button" role="tab" id="tab-preview" aria-controls="preview" aria-selected="false" tabindex="-1">Article preview</button>
+			<button type="button" role="tab" id="tab-wikitext" aria-controls="wikitext" aria-selected="false" tabindex="-1">Wikitext</button>
+		</div>
+		<div id="info" role="tabpanel" aria-labelledby="tab-info" tabindex="0"></div>
+		<div id="translation" role="tabpanel" aria-labelledby="tab-translation" tabindex="0" hidden>
+			<table id="cxtable"></table>
+		</div>
+		<div id="preview" role="tabpanel" aria-labelledby="tab-preview" tabindex="0" hidden></div>
+		<pre id="wikitext" role="tabpanel" aria-labelledby="tab-wikitext" tabindex="0" hidden></pre>
+	</main>
+</body>
+
+</html>

@@ -1,14 +1,265 @@
-.section-info {
-  color: darkgrey;
+:root {
+  color-scheme: light dark;
 }
 
-td,
-th {
-  vertical-align: top;
+body {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  min-height: 100vh;
+  background-color: var(--background-color-base);
+  color: var(--color-base);
+  font-family: var(--font-family-system-sans);
+  font-size: var(--font-size-medium);
+  line-height: var(--line-height-medium);
+
+  @media (max-width: 48rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+body > nav {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: var(--spacing-100);
+  background-color: var(--background-color-neutral-subtle);
+  border-inline-end: var(--border-subtle);
+
+  @media (max-width: 48rem) {
+    position: static;
+    height: auto;
+    border-inline-end: 0;
+    border-block-end: var(--border-subtle);
+  }
+
+  strong {
+    display: block;
+    padding: var(--spacing-50) var(--spacing-75);
+    font-size: var(--font-size-large);
+  }
+
+  ul {
+    list-style: none;
+    margin: var(--spacing-50) 0 0;
+    padding: 0;
+  }
+
+  a {
+    display: block;
+    padding: var(--spacing-50) var(--spacing-75);
+    border-radius: var(--border-radius-base);
+    color: var(--color-base);
+    text-decoration: none;
+
+    &:hover {
+      background-color: var(--background-color-interactive-subtle--hover);
+    }
+
+    &:focus-visible {
+      outline: var(--border-width-thick) solid var(--outline-color-progressive--focus);
+    }
+
+    &[aria-current="page"] {
+      background-color: var(--background-color-progressive-subtle);
+      color: var(--color-progressive);
+      font-weight: var(--font-weight-bold);
+    }
+  }
+
+  > a {
+    margin-top: auto;
+    color: var(--color-subtle);
+    font-size: var(--font-size-small);
+  }
+}
+
+main {
+  padding: var(--spacing-150) var(--spacing-200);
+
+  h1 {
+    margin-top: 0;
+    font-size: var(--font-size-xx-large);
+    line-height: var(--line-height-xx-large);
+  }
+
+  h2 {
+    font-size: var(--font-size-x-large);
+  }
+
+  a {
+    color: var(--color-link);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+input:is(:not([type]), [type="text"], [type="url"], [type="search"]) {
+  box-sizing: border-box;
+  min-height: var(--size-200);
+  padding: var(--spacing-25) var(--spacing-50);
+  background-color: var(--background-color-base);
+  color: var(--color-base);
+  border: var(--border-base);
+  border-radius: var(--border-radius-base);
+  font: inherit;
+  font-size: var(--font-size-medium);
+  font-weight: var(--font-weight-normal);
+
+  &:focus {
+    outline: 0;
+    border-color: var(--border-color-progressive--focus);
+    box-shadow: inset 0 0 0 1px var(--box-shadow-color-progressive--focus);
+  }
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--spacing-75);
+  margin-bottom: var(--spacing-150);
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-25);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-bold);
+
+    &.wide {
+      flex-basis: 100%;
+    }
+  }
+
+  button {
+    min-height: var(--size-200);
+    padding: 0 var(--spacing-75);
+    background-color: var(--background-color-progressive);
+    color: var(--color-inverted-fixed);
+    border: 0;
+    border-radius: var(--border-radius-base);
+    font: inherit;
+    font-weight: var(--font-weight-bold);
+    cursor: var(--cursor-base--hover);
+
+    &:hover {
+      background-color: var(--background-color-progressive--hover);
+    }
+
+    &:active {
+      background-color: var(--background-color-progressive--active);
+    }
+
+    &:focus-visible {
+      outline: var(--border-width-thick) solid var(--outline-color-progressive--focus);
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      background-color: var(--background-color-disabled);
+      color: var(--color-inverted);
+      cursor: var(--cursor-base--disabled);
+    }
+  }
+}
+
+progress {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--spacing-100);
+  accent-color: var(--color-progressive);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+[role="tablist"] {
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: var(--spacing-100);
+  border-bottom: var(--border-subtle);
+
+  button {
+    padding: var(--spacing-50) var(--spacing-100);
+    background: none;
+    color: var(--color-subtle);
+    border: 0;
+    border-bottom: var(--border-width-thick) solid transparent;
+    font: inherit;
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+    cursor: var(--cursor-base--hover);
+
+    &:hover {
+      color: var(--color-base);
+    }
+
+    &[aria-selected="true"] {
+      color: var(--color-progressive);
+      border-bottom-color: var(--border-color-progressive);
+    }
+
+    &:focus-visible {
+      outline: var(--border-width-thick) solid var(--outline-color-progressive--focus);
+      outline-offset: -2px;
+    }
+  }
+}
+
+#info table,
+#cxtable {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: var(--spacing-50);
+    border-bottom: var(--border-subtle);
+    text-align: start;
+    vertical-align: top;
+  }
+}
+
+#info td:first-child {
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+#cxtable {
+  table-layout: fixed;
+
+  th {
+    background-color: var(--background-color-neutral-subtle);
+  }
+
+  td {
+    overflow-wrap: anywhere;
+  }
+}
+
+.section-info {
+  color: var(--color-subtle);
 }
 
 pre {
   white-space: pre-wrap;
+  font-family: var(--font-family-monospace);
+}
+
+pre#wikitext {
+  padding: var(--spacing-75);
+  background-color: var(--background-color-neutral-subtle);
+  border: var(--border-subtle);
+  border-radius: var(--border-radius-base);
 }
 
 .mw-reference-text div, /* https://phabricator.wikimedia.org/T213256 */
@@ -17,14 +268,13 @@ pre {
 #preview th[id],
 #preview table[id],
 #preview .cx-segment {
-  outline: 3px solid red;
+  outline: 3px solid var(--border-color-error);
 }
 
-details {
-  background-color: whitesmoke;
-  padding: 4px;
-}
-
-.progress {
-  display: none;
+#cxtable details {
+  margin-top: var(--spacing-50);
+  padding: var(--spacing-25) var(--spacing-50);
+  background-color: var(--background-color-neutral-subtle);
+  color: var(--color-subtle);
+  font-size: var(--font-size-small);
 }

@@ -3,72 +3,36 @@
 
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CX Page load debugger</title>
   <meta name="description" content="Translation debugger for Content Translation" />
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet"
-    href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-  <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
-
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+  <link rel="stylesheet" href="lib/codex/theme-wikimedia-ui.css">
+  <link rel="stylesheet" href="lib/codex/theme-wikimedia-ui-mode-dark.css" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="style.css">
   <style>
-
-
     article {
       max-width: 60ch;
       display: grid;
       gap: 1em;
     }
+
     .cx-segment {
-      font-size: 16px;
-      padding: 2px 4px;
+      font-size: var(--font-size-medium);
+      padding: 2px var(--spacing-25);
       line-height: 1.4;
-      border-radius: 8px;
+      border-radius: var(--border-radius-base);
 
       a {
         text-decoration: none;
         color: inherit;
       }
-    }
 
-    .green {
-      background-color: #e8f5e9 !important;
-      color: #1b5e20;
-    }
-
-    .red {
-      color: #b71c1c;
-      background-color: #ffebee  !important;
-    }
-
-    .yellow {
-      background-color: #fffde7  !important;
-      color: #f57f17;
-    }
-
-    .orange {
-      color: #e65100  !important;
-      background-color: #fff3e0 !important;
-    }
-
-    .blue {
-      background-color: #e3f2fd !important;
-      color: #0d47a1 !important;
-    }
-
-    .indigo {
-      background-color: #e8eaf6 !important;
-      color: #1a237e;
-    }
-
-    .lime {
-      background-color: #f9fbe7 !important;
-      color: #827717;
+      &[data-tone="progressive"] { background-color: var(--background-color-progressive-subtle); }
+      &[data-tone="success"] { background-color: var(--background-color-success-subtle); }
+      &[data-tone="warning"] { background-color: var(--background-color-warning-subtle); }
+      &[data-tone="error"] { background-color: var(--background-color-error-subtle); }
+      &[data-tone="notice"] { background-color: var(--background-color-notice-subtle); }
     }
   </style>
   <script>
@@ -85,19 +49,10 @@
         const result = await main();
         article.innerHTML = result.segmentedContent;
         article.querySelector("base").remove();
-        const classes = [
-          "red",
-          "blue",
-          "orange",
-          "green",
-          "yellow",
-          "indigo",
-          "lime"
-        ];
+        const tones = ["progressive", "success", "warning", "error", "notice"];
         const sentencesEls = document.querySelectorAll(".cx-segment");
         for (let i = 0; i < sentencesEls.length; i++) {
-          const randomClass = classes[i % classes.length];
-          sentencesEls[i].classList.add(randomClass);
+          sentencesEls[i].dataset.tone = tones[i % tones.length];
         }
         return false;
       });
@@ -106,37 +61,27 @@
 </head>
 
 <body>
-  <nav>
-    <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Page loader debugger</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="/">Translation debugger</a></li>
-        <li><a href="templates.html">Template debugger</a></li>
-      </ul>
-    </div>
+  <nav aria-label="Debuggers">
+    <strong>CX Debugger</strong>
+    <ul>
+      <li><a href="translation.html">Translation debugger</a></li>
+      <li><a href="templates.html">Template debugger</a></li>
+      <li><a href="pageload.html" aria-current="page">Page loader debugger</a></li>
+    </ul>
+    <a href="https://github.com/santhoshtr/cxdebugger">Source code</a>
   </nav>
 
-  <div class="container">
+  <main>
+    <h1>Page loader debugger</h1>
+
     <form id="articleform">
-      <div class='row'>
-        <label for="host" class="col s8">CXServer Host: <input class="input-field " type="text" id="host"
-            value="https://cxserver.wikimedia.org" />
-        </label>
-
-      </div>
-      <div class='row'>
-        <label for="language" class="col s2">Article Language: <input class="input-field" type="text" id="language"
-            value="en" />
-        </label>
-
-        <label for="title" class="col s6">Article Title: <input class="input-field" type="text" id="title"
-            value="Albert Einstein" />
-        </label>
-
-      </div>
-      <button type="submit" class="waves-effect waves-light btn">Submit</button>
+      <label class="wide">CXServer Host <input type="url" id="host" value="https://cxserver.wikimedia.org" /></label>
+      <label>Article Language <input type="text" id="language" value="en" /></label>
+      <label>Article Title <input type="text" id="title" value="Albert Einstein" /></label>
+      <button type="submit">Submit</button>
     </form>
     <article id="article"></article>
-  </div>
-
+  </main>
 </body>
+
+</html>
