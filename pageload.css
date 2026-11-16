@@ -1,0 +1,24 @@
+/* Loaded inside the article's shadow root, after the page's own styles. */
+:host {
+  display: grid;
+  gap: 1em;
+  max-width: 60ch;
+}
+
+.cx-segment {
+  font-size: var(--font-size-medium);
+  padding: 2px var(--spacing-25);
+  line-height: 1.4;
+  border-radius: var(--border-radius-base);
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &[data-tone="progressive"] { background-color: var(--background-color-progressive-subtle); }
+  &[data-tone="success"] { background-color: var(--background-color-success-subtle); }
+  &[data-tone="warning"] { background-color: var(--background-color-warning-subtle); }
+  &[data-tone="error"] { background-color: var(--background-color-error-subtle); }
+  &[data-tone="notice"] { background-color: var(--background-color-notice-subtle); }
+}

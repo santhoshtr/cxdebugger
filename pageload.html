@@ -10,31 +10,6 @@
   <link rel="stylesheet" href="lib/codex/theme-wikimedia-ui.css">
   <link rel="stylesheet" href="lib/codex/theme-wikimedia-ui-mode-dark.css" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="style.css">
-  <style>
-    article {
-      max-width: 60ch;
-      display: grid;
-      gap: 1em;
-    }
-
-    .cx-segment {
-      font-size: var(--font-size-medium);
-      padding: 2px var(--spacing-25);
-      line-height: 1.4;
-      border-radius: var(--border-radius-base);
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-
-      &[data-tone="progressive"] { background-color: var(--background-color-progressive-subtle); }
-      &[data-tone="success"] { background-color: var(--background-color-success-subtle); }
-      &[data-tone="warning"] { background-color: var(--background-color-warning-subtle); }
-      &[data-tone="error"] { background-color: var(--background-color-error-subtle); }
-      &[data-tone="notice"] { background-color: var(--background-color-notice-subtle); }
-    }
-  </style>
   <script>
     async function main() {
       const req = await fetch(
@@ -47,10 +22,18 @@
       articleform.addEventListener("submit", async (e) => {
         e.preventDefault();
         const result = await main();
-        article.innerHTML = result.segmentedContent;
-        article.querySelector("base").remove();
+        const doc = new DOMParser().parseFromString(result.segmentedContent, "text/html");
+        // <base> has no effect in a shadow tree. Resolve the page's stylesheet URLs against it.
+        for (const link of doc.querySelectorAll('link[rel~="stylesheet"]')) {
+          link.setAttribute("href", link.href);
+        }
+        doc.querySelector("base")?.remove();
+        // Render in a shadow root so the page's styles do not leak into this tool's UI.
+        const root = article.shadowRoot || article.attachShadow({ mode: "open" });
+        root.innerHTML = doc.head.innerHTML + doc.body.innerHTML +
+          '<link rel="stylesheet" href="pageload.css">';
         const tones = ["progressive", "success", "warning", "error", "notice"];
-        const sentencesEls = document.querySelectorAll(".cx-segment");
+        const sentencesEls = root.querySelectorAll(".cx-segment");
         for (let i = 0; i < sentencesEls.length; i++) {
           sentencesEls[i].dataset.tone = tones[i % tones.length];
         }
